@@ -15,9 +15,7 @@ An archive can contain both `Logo.png` and `logo.png`, even though the names can
 
 Select a ZIP up to 8 MiB and click **Check ZIP**. You can also try either built-in sample. The sample with issues returns three findings, and the clean sample returns zero.
 
-## Run locally
 
-With Python 3 installed, run `python app.py` from the repository root and open [localhost:8000](http://127.0.0.1:8000/).
 
 ## How it works
 
