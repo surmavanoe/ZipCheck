@@ -1,31 +1,26 @@
 # ZipCheck
 
-Vultr Agent Rush Hackathon — C2, Powering the Future of Work.
+**Check a ZIP for Windows filename conflicts before you share it.**
 
-## Live demo
+[Try the live demo](https://209.250.247.89/)
 
-[Open ZipCheck](https://209.250.247.89/). Scan your own ZIP or try either built-in sample.
+An archive can contain both `Logo.png` and `logo.png`, even though the names can collide when someone extracts it into a typical Windows folder. ZipCheck flags paths like these and suggests how to fix them before you send the archive.
 
-## Local demo
+## What it checks
 
-From this folder, run `python app.py` and open http://127.0.0.1:8000.
-Try both sample buttons, then upload your own ZIP to recheck.
+- Paths that may collide on Windows, including names that differ only in capitalization
+- Reserved Windows names such as `AUX.txt`
+- Unsupported characters and names ending in a dot or space
+- Unsafe path components such as `..`
 
-## Deploy on Vultr
+Select a ZIP up to 8 MiB and click **Check ZIP**. You can also try either built-in sample. The sample with issues returns three findings, and the clean sample returns zero.
 
-1. Create a Shared CPU Cloud Compute instance with Ubuntu and your SSH public key. Enable a public IPv4 address.
-2. Connect with SSH and install Python, its venv package, and Nginx.
-3. Copy app.py and index.html onto the VM, or clone the public GitHub repo.
-4. From the project directory, run:
+## Run locally
 
-```sh
-python3 -m venv .venv
-.venv/bin/pip install gunicorn
-.venv/bin/gunicorn --bind 127.0.0.1:8000 app:application
-```
+With Python 3 installed, run `python app.py` from the repository root and open [localhost:8000](http://127.0.0.1:8000/).
 
-5. Use systemd to keep that Gunicorn command running. Configure Nginx to proxy to http://127.0.0.1:8000 and set client_max_body_size to 8m. Allow HTTP/HTTPS through your Vultr firewall and configure HTTPS before using real archives.
+## How it works
 
-## How Vultr powers the demo
+The live demo runs on a Vultr Ubuntu VM. Nginx handles HTTPS and forwards scan requests to the Python app running under Gunicorn. ZipCheck reads the archive’s file list without extracting its contents and returns flagged paths with suggested fixes. A clean result means the archive passed the checks listed above.
 
-The VM serves the interface and runs the Windows path checks on uploaded ZIP archives. ZipCheck reads the archive's directory without extracting files or keeping uploads. It checks common Windows naming problems. A clean scan only covers the implemented checks.
+Built for **Vultr Agent Rush Hackathon · C2, Powering the Future of Work**.
