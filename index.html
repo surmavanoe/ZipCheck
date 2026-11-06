@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ZipCheck</title>
+<style>
+* { box-sizing: border-box; }
+:root { color-scheme: dark; --navy:#24385a; --ink:#14223b; --panel:#1c2d49; --line:#4c6281; --paper:#fff3d8; --text:#e6ecf6; --muted:#bdcbe0; --green:#81cc72; --burgundy:#a83855; }
+body { margin:0; background:linear-gradient(155deg,var(--navy),var(--ink) 72%); color:var(--text); font:16px/1.6 system-ui,sans-serif; }
+a { color:var(--green); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline:2px solid var(--paper); outline-offset:4px; }
+.topbar, main, footer { width:min(1080px,calc(100% - 36px)); margin-inline:auto; }
+.topbar, footer { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px 24px; padding-block:20px; }
+.topbar { border-bottom:1px solid var(--line); }
+.brand { display:inline-flex; align-items:center; gap:10px; font-size:1.3rem; font-weight:800; text-decoration:none; }
+.books { display:grid; gap:2px; width:24px; transform:skewY(-9deg); }
+.books i { height:5px; border-radius:2px; background:var(--burgundy); }
+.books i:nth-child(2) { background:#6392c5; }
+.books i:nth-child(3) { background:var(--green); }
+nav { display:flex; flex-wrap:wrap; gap:8px 18px; }
+nav a { color:var(--text); text-decoration:none; font-weight:650; }
+nav a:hover { color:var(--green); }
+.hero { padding:clamp(32px,7vw,76px) 0 28px; }
+.eyebrow { color:var(--green); font-size:.76rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+h1,h2,h3 { color:var(--paper); line-height:1.15; }
+h1 { font-size:clamp(2.5rem,6vw,4.6rem); letter-spacing:-.06em; margin:.2em 0; max-width:17ch; }
+h2 { margin:0 0 10px; }
+h3 { margin:0 0 6px; font-size:1.05rem; }
+p { margin:.55em 0; color:var(--muted); }
+.hero p { max-width:54ch; font-size:1.1rem; }
+.scan-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.panel { min-width:0; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:clamp(16px,3vw,26px); }
+.results { border-top:3px solid var(--burgundy); }
+label,input { display:block; margin:8px 0; }
+label { font-weight:650; }
+input { max-width:100%; }
+input::file-selector-button, button { font:inherit; font-weight:700; padding:8px 12px; border:1px solid var(--line); border-radius:8px; background:#2c4364; color:var(--text); cursor:pointer; }
+button { margin:8px 4px 0 0; }
+button:hover, input::file-selector-button:hover { filter:brightness(1.14); }
+button:disabled { opacity:.6; cursor:wait; }
+button[type=submit] { background:var(--green); color:#142618; border-color:var(--green); }
+code { color:var(--green); }
+#issues { padding-left:20px; }
+#issues:empty { display:none; }
+#issues li { margin:12px 0; overflow-wrap:anywhere; }
+.info { margin:36px 0; scroll-margin-top:20px; }
+.steps { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }
+.step-number { color:var(--green); font-size:.8rem; font-weight:800; }
+footer { border-top:1px solid var(--line); color:var(--muted); font-size:.9rem; }
+@media (max-width:680px) { .scan-grid,.steps { grid-template-columns:1fr; } }
+</style></head>
+<body id="top">
+<header class="topbar">
+  <a class="brand" href="#top"><span class="books" aria-hidden="true"><i></i><i></i><i></i></span>ZipCheck</a>
+  <nav aria-label="Main navigation"><a href="#checker">ZIP checker</a><a href="#how-it-works">How it works</a><a href="#about">About</a></nav>
+</header>
+<main>
+  <section class="hero" aria-labelledby="headline">
+    <span class="eyebrow">Windows archive compatibility</span>
+    <h1 id="headline">Check your ZIP before you send it.</h1>
+    <p>Catch common Windows filename problems before they interrupt a file handoff.</p>
+  </section>
+  <div class="scan-grid" id="checker">
+    <section class="panel" aria-labelledby="upload-title">
+      <h2 id="upload-title">Check an archive</h2>
+      <form id="scan-form"><label for="zip">Choose a ZIP file (up to 8 MiB)</label><input id="zip" type="file" accept=".zip" required><button type="submit">Check ZIP</button></form>
+      <button type="button" data-sample="conflicts">Try sample with issues</button><button type="button" data-sample="clean">Try clean sample</button>
+    </section>
+    <section class="panel results" aria-live="polite">
+      <h2 id="status">Scan results</h2><p id="summary">Choose an archive or try a sample to see its results here.</p><ul id="issues"></ul>
+    </section>
+  </div>
+  <section class="info" id="how-it-works">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="panel"><span class="step-number">01</span><h3>Upload a ZIP</h3><p>Choose an archive you’re about to share.</p></div>
+      <div class="panel"><span class="step-number">02</span><h3>Review the findings</h3><p>See the exact paths that may cause issues and what to change.</p></div>
+      <div class="panel"><span class="step-number">03</span><h3>Fix and recheck</h3><p>Rename flagged items, rebuild your ZIP, and scan it again.</p></div>
+    </div>
+  </section>
+  <section class="panel info" id="about">
+    <h2>About ZipCheck</h2>
+    <p>ZipCheck helps you share archives with Windows users. It reads the archive’s file list without extracting its contents and checks for common problems like case collisions, reserved names, and trailing dots or spaces.</p>
+    <p>A clean result means the archive passed the checks included in this demo.</p>
+  </section>
+</main>
+<footer><span>ZipCheck · Vultr Agent Rush Hackathon</span><a href="#top">Back to top ↑</a></footer>
+<script>
+const form = document.querySelector('#scan-form');
+const status = document.querySelector('#status');
+const summary = document.querySelector('#summary');
+const issues = document.querySelector('#issues');
+
+async function scan(file) {
+  const buttons = document.querySelectorAll('button');
+  buttons.forEach(button => button.disabled = true);
+  status.textContent = 'Checking ZIP…';
+  summary.textContent = '';
+  issues.replaceChildren();
+  try {
+    if (file.size > 8 * 1024 * 1024) throw new Error('Choose a ZIP file up to 8 MiB.');
+    const response = await fetch('/scan', { method: 'POST', body: file });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error);
+    status.textContent = data.issues.length ? 'Potential issues found' : 'No issues found by these checks';
+    summary.textContent = data.entries + ' entries scanned · ' + data.issues.length + ' findings';
+    for (const [type, path, fix] of data.issues) {
+      const item = document.createElement('li');
+      const name = document.createElement('code');
+      name.textContent = path;
+      item.append(type + ' — ', name, document.createElement('br'), fix);
+      issues.append(item);
+    }
+  } catch (error) {
+    status.textContent = 'Could not scan ZIP';
+    summary.textContent = error.message;
+  } finally {
+    buttons.forEach(button => button.disabled = false);
+  }
+}
+
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  scan(document.querySelector('#zip').files[0]);
+});
+const samples = {"conflicts": "UEsDBBQAAAAAAKyFZl0AAAAAAAAAAAAAAAAPAAAAYXNzZXRzL0xvZ28ucG5nUEsDBBQAAAAAAKyFZl0AAAAAAAAAAAAAAAAPAAAAYXNzZXRzL2xvZ28ucG5nUEsDBBQAAAAAAKyFZl0AAAAAAAAAAAAAAAANAAAAbm90ZXMvQVVYLnR4dFBLAwQUAAAAAACshWZdAAAAAAAAAAAAAAAAGAAAAGRyYWZ0cy9maW5hbC4vcmVhZG1lLnR4dFBLAQIUABQAAAAAAKyFZl0AAAAAAAAAAAAAAAAPAAAAAAAAAAAAAACAAQAAAABhc3NldHMvTG9nby5wbmdQSwECFAAUAAAAAACshWZdAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAgAEtAAAAYXNzZXRzL2xvZ28ucG5nUEsBAhQAFAAAAAAArIVmXQAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAIABWgAAAG5vdGVzL0FVWC50eHRQSwECFAAUAAAAAACshWZdAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAgAGFAAAAZHJhZnRzL2ZpbmFsLi9yZWFkbWUudHh0UEsFBgAAAAAEAAQA+wAAALsAAAAAAA==", "clean": "UEsDBBQAAAAAAKyFZl0AAAAAAAAAAAAAAAAPAAAAYXNzZXRzL0xvZ28ucG5nUEsDBBQAAAAAAKyFZl0AAAAAAAAAAAAAAAAVAAAAYXNzZXRzL2xvZ28tc21hbGwucG5nUEsDBBQAAAAAAKyFZl0AAAAAAAAAAAAAAAARAAAAbm90ZXMvc3VtbWFyeS50eHRQSwMEFAAAAAAArIVmXQAAAAAAAAAAAAAAABcAAABkcmFmdHMvZmluYWwvcmVhZG1lLnR4dFBLAQIUABQAAAAAAKyFZl0AAAAAAAAAAAAAAAAPAAAAAAAAAAAAAACAAQAAAABhc3NldHMvTG9nby5wbmdQSwECFAAUAAAAAACshWZdAAAAAAAAAAAAAAAAFQAAAAAAAAAAAAAAgAEtAAAAYXNzZXRzL2xvZ28tc21hbGwucG5nUEsBAhQAFAAAAAAArIVmXQAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAIABYAAAAG5vdGVzL3N1bW1hcnkudHh0UEsBAhQAFAAAAAAArIVmXQAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAIABjwAAAGRyYWZ0cy9maW5hbC9yZWFkbWUudHh0UEsFBgAAAAAEAAQABAEAAMQAAAAAAA=="};
+document.querySelectorAll('[data-sample]').forEach(button => {
+  button.addEventListener('click', () => {
+    const bytes = Uint8Array.from(atob(samples[button.dataset.sample]), c => c.charCodeAt(0));
+    scan(new Blob([bytes], { type: 'application/zip' }));
+  });
+});
+</script></body></html>
+
